@@ -1,8 +1,11 @@
 import sys
 from app import create_app,db
 from flask.cli import FlaskGroup
+from dotenv import load_dotenv
 
-app = create_app('default')
+load_dotenv()
+
+app = create_app()
 cli = FlaskGroup(create_app = create_app)
 
 @cli.command('recreate_db')

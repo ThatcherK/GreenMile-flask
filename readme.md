@@ -16,17 +16,17 @@ An API for the greenMile web application
 
 ### Create a virtual environment 
 
-`python3 -m venv venv`
+`python3 -m venv env`
 
 ### Activate the virtual environment
  
 For macOS/Linux
 
-`source venv/bin/activate`
+`source env/bin/activate`
 
 For windows
 
-`venv\Scripts\activate`
+`env\Scripts\activate`
 
 ### Install dependencies
 
