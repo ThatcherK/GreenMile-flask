@@ -3,16 +3,14 @@ from app import db
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer,primary_key=True)
-    role = db.Column(db.Integer,db.ForeignKey('roles.id'))
-    name = db.Column(db.String(128),nullable=False)
+    name = db.Column(db.String(64),nullable=False)
     email = db.Column(db.String(64),unique=True, index=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
 
-    def __init__(self,role,name,email,password):
-        self.role = role
-        self.name = name
+    def __init__(self,email,password):
         self.email = email
         self.password = password
+        self.name = name
 
     def save(self):
         db.session.add(self)
@@ -20,20 +18,23 @@ class User(db.Model):
     def json(self):
         data= {
             'id': self.id,
-            'role':self.role,
-            'name':self.name,
             'email':self.email,
             'password':self.password
+            'name':self.name
         }
         return data
 
-class Role(db.Model):
-    __tablename__ = "roles"
+class Invited_user(db.Model):
+    __tablename__ = "invited_user"
     id = db.Column(db.Integer,primary_key=True)
-    name = db.Column(db.String(64),nullable=False)
+    email = db.Column(db.String(64),nullable=False)
+    invite_code = db.Column(db.String(64),nullable=False)
+    role = db.Column(db.String(64),nullable=False)
 
     def __init__(self,name):
-        self.name = name
+        self.email = email
+        self.invite_code = invite_code
+        self.role = role
 
     def save(self):
         db.session.add(self)
