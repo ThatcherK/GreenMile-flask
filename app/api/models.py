@@ -6,7 +6,7 @@ class User(db.Model):
     name = db.Column(db.String(64),nullable=False)
     email = db.Column(db.String(64),unique=True, index=True, nullable=False)
     password = db.Column(db.String(128), nullable=False)
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'),nullable=False)
 
     def __init__(self,name,email,password,role_id):
         self.name = name
@@ -27,13 +27,14 @@ class User(db.Model):
             'role':role.role_name
         }
         return data
-
+    def __repr__(self):
+        return f'<User, {self.email,self.password,self.name,self.role_id}>'
 class Invited_user(db.Model):
     __tablename__ = "invited_user"
     id = db.Column(db.Integer,primary_key=True)
     email = db.Column(db.String(64),nullable=False)
     invite_code = db.Column(db.String(64),nullable=False)
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'),nullable=False)
 
     def __init__(self,email,invite_code,role_id):
         self.email = email
@@ -53,6 +54,9 @@ class Invited_user(db.Model):
         }
         return data
 
+    def __repr__(self):
+        return f'<Invited_user, {self.email,self.invite_code,self.role_id}>'
+
 class Role(db.Model):
     __tablename__ = 'roles'
     id = db.Column(db.Integer,primary_key=True)
@@ -64,7 +68,8 @@ class Role(db.Model):
     def json(self):
         data ={'role_name':self.role_name}
         return data
-
+    def __repr__(self):
+        return f'<Role, {self.role_name,self.id}>'
 class Package(db.Model):
     __tablename__ = "packages"
     id = db.Column(db.Integer,primary_key=True)

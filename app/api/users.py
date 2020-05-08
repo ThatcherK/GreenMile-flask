@@ -8,14 +8,12 @@ api = Api(users_blueprint)
 
 user = api.model('User', {
     'id': fields.Integer(readOnly=True),
-    # 'role':fields.Integer(required=True),
     'email': fields.String(required=True),
     'name': fields.String(required=True),
     'password': fields.String(required=True)
 })
 user_login = api.model('User',{
     'id': fields.Integer(readOnly=True),
-    # 'role':fields.Integer(required=False),
     'email': fields.String(required=True),
     'name': fields.String(required=False),
     'password': fields.String(required=True)
@@ -39,11 +37,13 @@ class SignUp(Resource):
         invited_user = Invited_user.query.filter_by(email=email,invite_code=invite_code).first()
         if invited_user:
             db.session.add(User(name=name,email=email,password=password,role_id=invited_user.role_id))
+            print(invited_user.role_id)
             db.session.commit()
             response_object['message'] = f'{email} was added!'
             print(response_object)
             return response_object,201
         else:
+            print(invited_user.role_id)
             response_object['message'] = 'Not authorised'
             return response_object,401
 api.add_resource(SignUp,'/users')
@@ -75,8 +75,8 @@ class LogIn(Resource):
         response_object={}
         
         if user.password != password:
-
-            return 'Wrong password',401
+            response_object['message'] = 'Wrong password'
+            return response_object,401
         if  not user:
             response_object['message'] = f'{email} does not exist'
             return response_object,404

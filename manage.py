@@ -17,7 +17,7 @@ def recreate_db():
 
 @cli.command('seed_db')
 def seed_db():
-    db.session.add(Invited_user( email='admin',invite_code='admin',role_id=0))
+    db.session.add(Invited_user( email='admin',invite_code='admin',role_id=1))
     db.session.add(Role(role_name='admin'))
     db.session.add(Role(role_name='supplier'))
     db.session.add(Role(role_name='hub_manager'))
