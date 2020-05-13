@@ -4,9 +4,11 @@ from flask_migrate import Migrate
 from config import config
 from flask_cors import CORS
 import os
+from flask_bcrypt import Bcrypt
 
 db = SQLAlchemy()
 migrate=Migrate()
+bcrypt = Bcrypt()
 
 def create_app(script_info=None):
     app = Flask(__name__)
@@ -16,6 +18,7 @@ def create_app(script_info=None):
 
     db.init_app(app)
     CORS(app)
+    bcrypt.init_app(app)
     migrate.init_app(app,db)
 
     # registering blueprints

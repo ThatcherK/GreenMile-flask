@@ -1,4 +1,5 @@
-from app import db
+from app import db,bcrypt
+from flask import current_app
 
 class User(db.Model):
     __tablename__ = "users"
@@ -11,7 +12,7 @@ class User(db.Model):
     def __init__(self,name,email,password,role_id):
         self.name = name
         self.email = email
-        self.password = password
+        self.password = bcrypt.generate_password_hash(password,current_app.config.get('BCRYPT_LOG_ROUNDS')).decode()
         self.role_id = role_id
 
     def save(self):
