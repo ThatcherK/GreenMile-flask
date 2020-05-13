@@ -11,7 +11,8 @@ def test_add_user(test_app,test_database):
         )
     resp =client.post(
         '/users',
-        data=json.dumps({'name':'Thatcher','email':'momo@mail.com','password':'real','invite_code':'that1'}),content_type='application/json',
+        data=json.dumps({'name':'Thatcher','email':'momo@mail.com','password':'real','invite_code':'that1'}),
+        content_type='application/json',
     )
     data = json.loads(resp.data.decode())
     assert resp.status_code == 201

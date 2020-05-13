@@ -37,10 +37,8 @@ class SignUp(Resource):
         invited_user = Invited_user.query.filter_by(email=email,invite_code=invite_code).first()
         if invited_user:
             db.session.add(User(name=name,email=email,password=password,role_id=invited_user.role_id))
-            print(invited_user.role_id)
             db.session.commit()
             response_object['message'] = f'{email} was added!'
-            print(response_object)
             return response_object,201
         else:
             print(invited_user.role_id)
