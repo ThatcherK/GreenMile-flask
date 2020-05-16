@@ -1,7 +1,7 @@
 from flask import Blueprint,request,jsonify
 from flask_restx import Resource,Api,fields
 from app import db
-from app.api.models import Package
+from app.api.models import Package,User
 
 packages_blueprint = Blueprint('packages',__name__)
 api = Api(packages_blueprint)
@@ -15,12 +15,17 @@ package = api.model('Package', {
     'recipient_id': fields.Integer(required=True)
 })
 class Packages(Resource):
-    @api.expect(package, validate=True)
+    # @api.expect(package, validate=True)
     def post(self):
+        auth_header = request.headers.get('Authorization')
+        if not auth_header:
+            return {'message': 'Provide valid auth token'},401
+        auth_token = auth_header.split(" ")[1]
+        supplier_id = User.decode_auth_token(auth_token)
         post_data = request.get_json()
         name = post_data.get('name')
         description = post_data.get('description')
-        supplier_id = post_data.get('supplier_id')
+        # supplier_id = post_data.get('supplier_id')
         weight = post_data.get('weight')
         recipient_id = post_data.get('recipient_id')
         response_object = {}

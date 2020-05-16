@@ -36,7 +36,8 @@ class SignUp(Resource):
 
         invited_user = Invited_user.query.filter_by(email=email,invite_code=invite_code).first()
         if invited_user:
-            db.session.add(User(name=name,email=email,password=password,role_id=invited_user.role_id))
+            user = User(name,email,password,invited_user.role_id)
+            db.session.add(user)
             db.session.commit()
             response_object['message'] = f'{email} was added!'
             return response_object,201
@@ -78,6 +79,14 @@ class LogIn(Resource):
         if  not user:
             response_object['message'] = f'{email} does not exist'
             return response_object,404
-        return user.json(),200
+        auth_token = user.encode_auth_token(user.id)
+        
+        response_object = {
+                "status" : "success",
+                "message": f'{email} was added!',
+                "auth_token": auth_token.decode(),
+                "user": user.json()
+                }
+        return response_object,200
 
 api.add_resource(LogIn,'/login')
