@@ -96,8 +96,6 @@ def test_user_logIn(test_app,test_database):
         content_type = 'application/json'
         )
     data = json.loads(resp.data.decode())
-    print(resp.status_code)
-    print(data['auth_token'])
     assert resp.status_code == 200
     assert "success" == data['status']
     assert 'paul@dop.com' == data['user']['email']

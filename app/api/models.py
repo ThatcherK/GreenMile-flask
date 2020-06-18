@@ -136,27 +136,48 @@ class Package(db.Model):
     supplier_id = db.Column(db.Integer,db.ForeignKey('users.id'),nullable=False)
     weight = db.Column(db.String(64),nullable=False)
     recipient_id = db.Column(db.Integer,db.ForeignKey('recipients.id'),nullable=False)
+    status = db.Column(db.Integer,db.ForeignKey('status.id'),nullable=False)
+    tracking_code = db.Column(db.String(64),nullable=True)
 
 
-    def __init__(self,name,description,supplier_id,weight,recipient_id):
+    def __init__(self,name,description,supplier_id,weight,recipient_id,status,tracking_code):
         self.name = name
         self.description = description
         self.supplier_id = supplier_id
         self.weight = weight
         self.recipient_id = recipient_id
+        self.status = status
+        self.tracking_code = tracking_code
 
     def save(self):
         db.session.add(self)
         db.session.commit()
     def json(self):
-        supplier =User.query.filter_by(self.supplier_id).first()
-        recipient = Recipient.query.filter_by(self.recipient_id).first()
+        supplier =User.query.filter_by(id=self.supplier_id).first()
+        recipient = Recipient.query.filter_by(id=self.recipient_id).first()
 
         data = {
             'name':self.name,
             'supplier':supplier.email,
             'weight':self.weight,
-            'recipient':recipient.email
+            'recipient':recipient.email,
+            'status':self.status,
+            'tracking_code':self.tracking_code
+
         }
         return data
 
+class Status(db.Model):
+    __tablename__ = "status"
+    id = db.Column(db.Integer,primary_key=True)
+    name = db.Column(db.String(64),nullable=False)
+
+    def __init__(self,name):
+        self.name = name
+
+    def json(self):
+        data ={'name':self.name}
+        return data
+
+    def __repr__(self):
+        return f'<Status, {self.name,self.id}>'
