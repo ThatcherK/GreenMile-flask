@@ -1,6 +1,6 @@
 from flask import Blueprint,request,jsonify
 from flask_restx import Resource,Api,fields
-from app import db
+from app import db,bcrypt
 from app.api.models import User,Invited_user
 
 users_blueprint = Blueprint('users',__name__)
@@ -37,10 +37,8 @@ class SignUp(Resource):
         invited_user = Invited_user.query.filter_by(email=email,invite_code=invite_code).first()
         if invited_user:
             db.session.add(User(name=name,email=email,password=password,role_id=invited_user.role_id))
-            print(invited_user.role_id)
             db.session.commit()
             response_object['message'] = f'{email} was added!'
-            print(response_object)
             return response_object,201
         else:
             print(invited_user.role_id)
@@ -74,7 +72,7 @@ class LogIn(Resource):
         user =User.query.filter_by(email=email).first()
         response_object={}
         
-        if user.password != password:
+        if not bcrypt.check_password_hash(user.password, password):
             response_object['message'] = 'Wrong password'
             return response_object,401
         if  not user:
