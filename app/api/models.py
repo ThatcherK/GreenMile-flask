@@ -1,5 +1,8 @@
 from app import db,bcrypt
 from flask import current_app
+import jwt
+import datetime
+
 
 class User(db.Model):
     __tablename__ = "users"
@@ -28,8 +31,41 @@ class User(db.Model):
             'role':role.role_name
         }
         return data
+
+    def encode_auth_token(self, user_id):
+        print(current_app.config.get('SECRET_KEY'))
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(
+                    days=current_app.config.get('TOKEN_EXPIRATION_DAYS'),
+                    seconds=current_app.config.get('TOKEN_EXPIRATION_SECONDS')),
+                'iat': datetime.datetime.utcnow(),
+                'sub': user_id
+            }
+            return jwt.encode(
+                payload,
+                current_app.config.get('SECRET_KEY'),
+                algorithm='HS256'
+            )
+        except Exception as e:
+            print(e.__str__())
+            return e.__str__()
+
+    @staticmethod
+    def decode_auth_token(auth_token):
+        try:
+            payload = jwt.decode(
+                auth_token,
+                current_app.config.get('SECRET_KEY'))
+            return payload['sub']
+        except jwt.ExpiredSignatureError:
+            return 'Expired token. Please Log in again'
+        except jwt.InvalidTokenError:
+            return 'Invalid token. Please log in again'
+
     def __repr__(self):
         return f'<User, {self.email,self.password,self.name,self.role_id}>'
+        
 class Invited_user(db.Model):
     __tablename__ = "invited_user"
     id = db.Column(db.Integer,primary_key=True)
@@ -85,6 +121,7 @@ class Recipient(db.Model):
         self.address = address
     def json(self):
         data = {
+            'id':self.id,
             'name': self.name,
             'email':self.email,
             'address':self.address
@@ -99,27 +136,48 @@ class Package(db.Model):
     supplier_id = db.Column(db.Integer,db.ForeignKey('users.id'),nullable=False)
     weight = db.Column(db.String(64),nullable=False)
     recipient_id = db.Column(db.Integer,db.ForeignKey('recipients.id'),nullable=False)
+    status = db.Column(db.Integer,db.ForeignKey('status.id'),nullable=False)
+    tracking_code = db.Column(db.String(64),nullable=True)
 
 
-    def __init__(self,name,description,supplier_id,weight,recipient_id):
+    def __init__(self,name,description,supplier_id,weight,recipient_id,status,tracking_code):
         self.name = name
         self.description = description
         self.supplier_id = supplier_id
         self.weight = weight
         self.recipient_id = recipient_id
+        self.status = status
+        self.tracking_code = tracking_code
 
     def save(self):
         db.session.add(self)
         db.session.commit()
     def json(self):
-        supplier =User.query.filter_by(self.supplier_id).first()
-        recipient = Recipient.query.filter_by(self.recipient_id).first()
+        supplier =User.query.filter_by(id=self.supplier_id).first()
+        recipient = Recipient.query.filter_by(id=self.recipient_id).first()
 
         data = {
             'name':self.name,
             'supplier':supplier.email,
             'weight':self.weight,
-            'recipient':recipient.email
+            'recipient':recipient.email,
+            'status':self.status,
+            'tracking_code':self.tracking_code
+
         }
         return data
 
+class Status(db.Model):
+    __tablename__ = "status"
+    id = db.Column(db.Integer,primary_key=True)
+    name = db.Column(db.String(64),nullable=False)
+
+    def __init__(self,name):
+        self.name = name
+
+    def json(self):
+        data ={'name':self.name}
+        return data
+
+    def __repr__(self):
+        return f'<Status, {self.name,self.id}>'

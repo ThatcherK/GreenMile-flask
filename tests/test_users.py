@@ -17,6 +17,7 @@ def test_add_user(test_app,test_database):
     data = json.loads(resp.data.decode())
     assert resp.status_code == 201
     assert 'momo@mail.com was added!' in data['message']
+    
 
 def test_add_user_invalid_json(test_app,test_database):
     client = test_app.test_client()
@@ -95,10 +96,11 @@ def test_user_logIn(test_app,test_database):
         content_type = 'application/json'
         )
     data = json.loads(resp.data.decode())
-    print(resp.status_code)
     assert resp.status_code == 200
-    # assert 'nope' == data['password']
-    assert 'paul@dop.com' == data['email']
+    assert "success" == data['status']
+    assert 'paul@dop.com' == data['user']['email']
+    assert data['auth_token'] is not None
+    assert 'Invalid token' not in data['auth_token']
 
 def test_user_login_invalid_fields(test_app,test_database):
     client = test_app.test_client()

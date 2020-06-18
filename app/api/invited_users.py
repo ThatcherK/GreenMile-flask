@@ -30,6 +30,10 @@ class Add_invited_user(Resource):
         response_object['message'] =f'{email} was added'
         return response_object,201
 
+    def get(self):
+        invited_users = Invited_user.query.all()
+        return  jsonify({'invited_users': [user.json() for user in invited_users ]}),200
+
 api.add_resource(Add_invited_user,'/invited_user')
 
-        
+
