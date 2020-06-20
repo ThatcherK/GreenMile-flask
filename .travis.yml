@@ -1,7 +1,7 @@
 language: python
 #version
 python:
-    -"3.6"
+    -"3.6.9"
 cache: pip
 services:
     -postgresql
