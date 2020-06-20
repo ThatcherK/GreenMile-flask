@@ -7,7 +7,7 @@ An API for the greenMile web application
 ## Technologies
 
 1. Python 3.7
-2. SQLite
+2. Postgresql
 3. Flask
 
 ## Setup 
