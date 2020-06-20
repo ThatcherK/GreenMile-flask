@@ -1,4 +1,6 @@
+
 language: python
+dist: xenial
 #version
 python:
     - "3.6.9"
