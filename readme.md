@@ -1,3 +1,4 @@
+https://travis-ci.org/ThatcherK/GreenMile-flask.svg?branch=develop
 ## GreenMile-flask
 
 An API for the greenMile web application

@@ -1,0 +1,16 @@
+language: python
+#version
+python:
+    -"3.7"
+cache: pip
+services:
+    -postgresql
+env:
+    -DATABASE_TEST_URL=postgresql://localhost/travis_ci_test
+before_script:
+    -psql -c 'create database travis_ci_test;' -U postgresql
+install:
+    -pip install -r requirements.txt
+script:
+    pytest
+     
