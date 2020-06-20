@@ -1,15 +1,15 @@
 language: python
 #version
 python:
-    -"3.6.9"
+    - "3.6.9"
 cache: pip
 services:
-    -postgresql
+    - postgresql
 env:
-    -DATABASE_TEST_URL=postgresql://localhost/travis_ci_test
+    - DATABASE_TEST_URL=postgresql://localhost/travis_ci_test
 before_script:
-    -psql -c 'create database travis_ci_test;' -U postgresql
+    - psql -c 'create database travis_ci_test;' -U postgresql
 install:
-    -pip install -r requirements.txt
+    - pip install -r requirements.txt
 script:
     pytest
