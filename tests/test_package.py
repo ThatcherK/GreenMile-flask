@@ -2,6 +2,8 @@ import json
 from app import db
 from app.api.models import User,Recipient,Invited_user
 
+
+
 def test_add_package(test_app,test_database):
     client = test_app.test_client()
     invited_user = Invited_user(email='momo@mail.com',invite_code='that1',role_id=2)
@@ -34,7 +36,6 @@ def test_add_package(test_app,test_database):
         content_type = 'application/json'
     )
     data = json.loads(resp.data.decode())
-    print(data)
     assert resp.status_code == 201
     assert 'Flat iron has been added' in data['message']
 

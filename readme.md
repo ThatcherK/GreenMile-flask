@@ -1,4 +1,4 @@
-https://travis-ci.org/ThatcherK/GreenMile-flask.svg?branch=develop
+[![Build Status](https://travis-ci.org/ThatcherK/GreenMile-flask.svg?branch=develop)](https://travis-ci.org/ThatcherK/GreenMile-flask)
 ## GreenMile-flask
 
 An API for the greenMile web application

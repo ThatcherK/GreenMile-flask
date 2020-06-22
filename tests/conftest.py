@@ -1,5 +1,5 @@
 import pytest
-from app.api.models import Role
+from app.api.models import Role,Status
 from app import create_app,db
 
 def seed_test_db():
@@ -7,6 +7,7 @@ def seed_test_db():
     db.session.add(Role(role_name='supplier'))
     db.session.add(Role(role_name='hub_manager'))
     db.session.add(Role(role_name='packager'))
+    db.session.add(Status(name="hub"))
     db.session.commit()
 
 @pytest.fixture(scope='module')
