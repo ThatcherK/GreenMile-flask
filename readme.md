@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/ThatcherK/GreenMile-flask.svg?branch=develop)](https://travis-ci.org/ThatcherK/GreenMile-flask)
+
+[![Coverage Status](https://coveralls.io/repos/github/ThatcherK/GreenMile-flask/badge.svg?branch=develop)](https://coveralls.io/github/ThatcherK/GreenMile-flask?branch=develop)
 ## GreenMile-flask
 
 An API for the greenMile web application
