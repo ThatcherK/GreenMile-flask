@@ -33,7 +33,7 @@ def recreate_db():
 
 @cli.command("seed_db")
 def seed_db():
-    db.session.add(Invited_user(email="admin", invite_code="admin", role_id=1))
+    db.session.add(Invited_user(email="admin@mail.com", invite_code="admin", role_id=1))
     create_roles()
     create_status()
     db.session.commit()

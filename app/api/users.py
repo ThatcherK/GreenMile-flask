@@ -86,6 +86,7 @@ class LogIn(Resource):
     @api.expect(user_login, validate=True)
     def post(self):
         post_data = request.get_json()
+        print(post_data)
         email = post_data.get("email")
         password = post_data.get("password")
         user = User.query.filter_by(email=email).first()

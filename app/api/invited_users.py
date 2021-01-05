@@ -1,8 +1,9 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from flask_restx import Api, Resource, fields
 
 from app import db
 from app.api.models import Invited_user
+from app.api.utilities import send_invite_email
 
 invited_users_blueprint = Blueprint("invited_users", __name__)
 api = Api(invited_users_blueprint)
@@ -35,6 +36,8 @@ class Add_invited_user(Resource):
             Invited_user(email=email, invite_code=invite_code, role_id=role_id)
         )
         db.session.commit()
+        if current_app.config != "testing":
+            send_invite_email(invite_code, invited_user.email, "http://localhost:3000/")
         response_object["message"] = f"{email} was added"
         return response_object, 201
 
