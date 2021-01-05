@@ -7,7 +7,7 @@ from app.api.models import Invited_user
 def test_add_recipient(test_app, test_database):
     client = test_app.test_client()
     client = test_app.test_client()
-    invited_user = Invited_user(email="momo@mail.com", invite_code="that1", role_id=2)
+    invited_user = Invited_user(email="momo@mail.com", role_id=2)
     db.session.add(invited_user)
     db.session.commit()
     client.post(

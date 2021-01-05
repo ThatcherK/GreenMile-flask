@@ -9,7 +9,7 @@ def test_add_user(test_app, test_database):
     client.post(
         "/invited_user",
         data=json.dumps(
-            {"email": "momo@mail.com", "invite_code": "that1", "role_id": 1}
+            {"email": "momo@mail.com", "role_id": 1}
         ),
         content_type="application/json",
     )
@@ -55,7 +55,7 @@ def test_add_user_duplicate_email(test_app, test_database):
     client.post(
         "/invited_user",
         data=json.dumps(
-            {"email": "momo@mail.com", "invite_code": "where4", "role_id": 1}
+            {"email": "momo@mail.com", "role_id": 1}
         ),
         content_type="application/json",
     )

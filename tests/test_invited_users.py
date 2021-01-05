@@ -6,7 +6,7 @@ def test_add_user(test_app, test_database):
     resp = client.post(
         "/invited_user",
         data=json.dumps(
-            {"email": "tkm@mail.com", "invite_code": "1234fg", "role_id": 1}
+            {"email": "tkm@mail.com", "role_id": 1}
         ),
         content_type="application/json",
     )
@@ -29,7 +29,7 @@ def test_add_user_invalid_json_keys(test_app, test_database):
     client = test_app.test_client()
     resp = client.post(
         "/invited_user",
-        data=json.dumps({"email": "mine@lol.com", "invite_code": "teuwehh7"}),
+        data=json.dumps({"email": "mine@lol.com"}),
         content_type="application/json",
     )
     data = json.loads(resp.data.decode())
@@ -42,14 +42,14 @@ def test_add_user_duplicate_email(test_app, test_database):
     client.post(
         "/invited_user",
         data=json.dumps(
-            {"email": "momo@mail.com", "invite_code": "erty", "role_id": 1}
+            {"email": "momo@mail.com", "role_id": 1}
         ),
         content_type="application/json",
     )
     resp = client.post(
         "/invited_user",
         data=json.dumps(
-            {"email": "momo@mail.com", "invite_code": "erty", "role_id": 1}
+            {"email": "momo@mail.com", "role_id": 1}
         ),
         content_type="application/json",
     )
