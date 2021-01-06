@@ -14,7 +14,6 @@ invited_user = api.model(
     {
         "id": fields.Integer(readOnly=True),
         "email": fields.String(required=True),
-        # "invite_code": fields.String(required=True),
         "role_id": fields.Integer(required=True),
     },
 )

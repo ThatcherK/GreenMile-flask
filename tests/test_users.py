@@ -1,18 +1,13 @@
 import json
 
 from app import db
-from app.api.models import User
+from app.api.models import User, Invited_user
 
 
 def test_add_user(test_app, test_database):
     client = test_app.test_client()
-    client.post(
-        "/invited_user",
-        data=json.dumps(
-            {"email": "momo@mail.com", "role_id": 1}
-        ),
-        content_type="application/json",
-    )
+    invited_user = Invited_user("momo@mail.com", "that1", 1)
+    invited_user.save()
     resp = client.post(
         "/users",
         data=json.dumps(

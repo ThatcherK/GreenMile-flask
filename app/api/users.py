@@ -52,7 +52,6 @@ class SignUp(Resource):
             response_object["message"] = f"{email} was added!"
             return response_object, 201
         else:
-            print(invited_user.role_id)
             response_object["message"] = "Not authorised"
             return response_object, 401
 
