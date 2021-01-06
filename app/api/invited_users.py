@@ -1,3 +1,4 @@
+from uuid import uuid4
 from flask import Blueprint, jsonify, request, current_app
 from flask_restx import Api, Resource, fields
 
@@ -13,7 +14,6 @@ invited_user = api.model(
     {
         "id": fields.Integer(readOnly=True),
         "email": fields.String(required=True),
-        "invite_code": fields.String(required=True),
         "role_id": fields.Integer(required=True),
     },
 )
@@ -23,22 +23,25 @@ class Add_invited_user(Resource):
     @api.expect(invited_user, validate=True)
     def post(self):
         post_data = request.get_json()
+        print(post_data)
         email = post_data.get("email")
-        invite_code = post_data.get("invite_code")
         role_id = post_data.get("role_id")
+        invite_code = str(uuid4())
         response_object = {}
 
         user = Invited_user.query.filter_by(email=email).first()
         if user:
             response_object["message"] = "Sorry, That email already exists."
             return response_object, 400
-        db.session.add(
-            Invited_user(email=email, invite_code=invite_code, role_id=role_id)
-        )
-        db.session.commit()
+        
+        invited_user = Invited_user(email=email, invite_code=invite_code, role_id=role_id)
+        invited_user.save()
         if current_app.config != "testing":
             send_invite_email(invite_code, invited_user.email, "http://localhost:3000/")
-        response_object["message"] = f"{email} was added"
+        response_object = {
+            "message": f"{email} was added",
+            "invited_user": invited_user.json()
+            }
         return response_object, 201
 
     def get(self):

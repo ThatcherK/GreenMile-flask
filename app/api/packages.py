@@ -67,9 +67,3 @@ class Packages(Resource):
 
 api.add_resource(Packages, "/packages")
 
-# class Package(Resource):
-#     def get(self,package_id):
-
-#         package = Packages.query.filter_by(id=package_id).first()
-#         return jsonify({'package': package.json()})
-# api.add_resource(Package,'/package')

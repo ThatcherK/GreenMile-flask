@@ -6,7 +6,7 @@ from app.api.models import Invited_user, Recipient, User
 
 def test_add_package(test_app, test_database):
     client = test_app.test_client()
-    invited_user = Invited_user(email="momo@mail.com", invite_code="that1", role_id=2)
+    invited_user = Invited_user("momo@mail.com", "that1", 2)
     db.session.add(invited_user)
     db.session.commit()
     client.post(
@@ -59,13 +59,8 @@ def test_add_package(test_app, test_database):
 
 def test_add_package_invalid_json(test_app, test_database):
     client = test_app.test_client()
-    client.post(
-        "/invited_user",
-        data=json.dumps(
-            {"email": "dem@mail.com", "invite_code": "that1", "role_id": 2}
-        ),
-        content_type="application/json",
-    )
+    invited_user = Invited_user("dem@mail.com", "that1", 2)
+    invited_user.save()
     client.post(
         "/users",
         data=json.dumps(
@@ -106,13 +101,8 @@ def test_add_package_invalid_json(test_app, test_database):
 
 def test_supplier_packages(test_app, test_database):
     client = test_app.test_client()
-    client.post(
-        "/invited_user",
-        data=json.dumps(
-            {"email": "dis@mail.com", "invite_code": "that1", "role_id": 2}
-        ),
-        content_type="application/json",
-    )
+    invited_user = Invited_user("dis@mail.com", "that1", 2)
+    invited_user.save()
     client.post(
         "/users",
         data=json.dumps(
