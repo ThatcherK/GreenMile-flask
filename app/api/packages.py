@@ -23,7 +23,7 @@ package = api.model(
 )
 
 
-class Packages(Resource):
+class SupplierPackages(Resource):
     # @api.expect(package, validate=True)
     def post(self):
         auth_header = request.headers.get("Authorization")
@@ -65,5 +65,5 @@ class Packages(Resource):
         return {"packages": [package.json() for package in packages]}, 200
 
 
-api.add_resource(Packages, "/packages")
+api.add_resource(SupplierPackages, "/packages")
 
