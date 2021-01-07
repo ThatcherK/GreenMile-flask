@@ -127,6 +127,10 @@ class Recipient(db.Model):
         self.email = email
         self.address = address
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+
     def json(self):
         data = {
             "id": self.id,
@@ -145,7 +149,7 @@ class Package(db.Model):
     supplier_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     weight = db.Column(db.String(64), nullable=False)
     recipient_id = db.Column(db.Integer, db.ForeignKey("recipients.id"), nullable=False)
-    status = db.Column(db.Integer, db.ForeignKey("status.id"), nullable=False)
+    status_id = db.Column(db.Integer, db.ForeignKey("status.id"), nullable=True)
     tracking_code = db.Column(db.String(64), nullable=True)
 
     def __init__(
@@ -155,7 +159,7 @@ class Package(db.Model):
         supplier_id,
         weight,
         recipient_id,
-        status,
+        status_id,
         tracking_code,
     ):
         self.name = name
@@ -163,7 +167,7 @@ class Package(db.Model):
         self.supplier_id = supplier_id
         self.weight = weight
         self.recipient_id = recipient_id
-        self.status = status
+        self.status_id = status_id
         self.tracking_code = tracking_code
 
     def save(self):
@@ -173,13 +177,15 @@ class Package(db.Model):
     def json(self):
         supplier = User.query.filter_by(id=self.supplier_id).first()
         recipient = Recipient.query.filter_by(id=self.recipient_id).first()
+        status = Status.query.filter_by(id=self.status_id).first()
 
         data = {
             "name": self.name,
             "supplier": supplier.email,
             "weight": self.weight,
-            "recipient": recipient.email,
-            "status": self.status,
+            "recipient": recipient.json(),
+            "status": status.name,
+            "description": self.description,
             "tracking_code": self.tracking_code,
         }
         return data

@@ -32,7 +32,7 @@ class SupplierPackages(Resource):
         auth_token = auth_header.split(" ")[1]
         supplier_id = User.decode_auth_token(auth_token)
         tracking_code = randomword(8)
-        status = 1
+        status_id = 1
         response_object = {}
         post_data = request.get_json()
         if not post_data:
@@ -44,7 +44,7 @@ class SupplierPackages(Resource):
         recipient_id = post_data.get("recipient_id")
 
         package = Package(
-            name, description, supplier_id, weight, recipient_id, status, tracking_code
+            name, description, supplier_id, weight, recipient_id, status_id, tracking_code
         )
         db.session.add(package)
         db.session.commit()
@@ -61,9 +61,14 @@ class SupplierPackages(Resource):
         auth_token = auth_header.split(" ")[1]
         supplier_id = User.decode_auth_token(auth_token)
         packages = Package.query.filter_by(supplier_id=supplier_id).all()
-        print(packages)
         return {"packages": [package.json() for package in packages]}, 200
 
 
-api.add_resource(SupplierPackages, "/packages")
+api.add_resource(SupplierPackages, "/packages/supplier")
 
+class HubManagerPackageView(Resource):
+    def get(self):
+        packages = Package.query.filter_by(status_id=1).all()
+        return {"packages": [package.json() for package in packages]}, 200
+
+api.add_resource(HubManagerPackageView, '/packages/hub')

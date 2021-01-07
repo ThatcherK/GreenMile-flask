@@ -1,7 +1,7 @@
 import json
 
 from app import db
-from app.api.models import Invited_user, Recipient, User
+from app.api.models import Invited_user, Recipient, User, Package
 
 
 def test_add_package(test_app, test_database):
@@ -39,7 +39,7 @@ def test_add_package(test_app, test_database):
     supplier = User.query.filter_by(email="momo@mail.com").first()
     recipient = Recipient.query.filter_by(email="pally@mail.com").first()
     resp = client.post(
-        "/packages",
+        "/packages/supplier",
         data=json.dumps(
             {
                 "name": "Flat iron",
@@ -89,7 +89,7 @@ def test_add_package_invalid_json(test_app, test_database):
         headers={"Authorization": f"Bearer {auth_token}"},
     )
     resp = client.post(
-        "/packages",
+        "/packages/supplier",
         data=json.dumps({}),
         content_type="application/json",
         headers={"Authorization": f"Bearer {auth_token}"},
@@ -134,7 +134,7 @@ def test_supplier_packages(test_app, test_database):
     supplier = User.query.filter_by(email="dis@mail.com").first()
     recipient = Recipient.query.filter_by(email="pall@mail.com").first()
     client.post(
-        "/packages",
+        "/packages/supplier",
         data=json.dumps(
             {
                 "name": "Flat iron",
@@ -147,7 +147,28 @@ def test_supplier_packages(test_app, test_database):
         headers={"Authorization": f"Bearer {auth_token}"},
         content_type="application/json",
     )
-    resp = client.get("/packages", headers={"Authorization": f"Bearer {auth_token}"})
+    resp = client.get("/packages/supplier", headers={"Authorization": f"Bearer {auth_token}"})
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 200
+    assert "Flat iron" in data.get("packages")[0].get("name")
+
+
+def test_get_hubmanager_packages(test_app, test_database):
+    client = test_app.test_client()
+    invited_supplier = Invited_user("d0s@mail.com", "that1", 2)
+    invited_supplier.save()
+    supplier = User("Thatcher", "d0s@mail.com", "real", 2)
+    supplier.save()
+    recipient = Recipient("Pearl", "pill@mail.com", "plot 94 Seeta")
+    recipient.save()
+    package = Package("Flat iron", "240V,600W", supplier.id, "0.5kg", recipient.id, 1, "gqdg")
+    package.save()
+    invited_hub_manager = Invited_user("hub@mail.com", "realo", 3)
+    invited_hub_manager.save()
+    hub_manager = User("Hub", "hub@mail.com", "hhhh", 3)
+    hub_manager.save()
+    auth_token = hub_manager.encode_auth_token(hub_manager.id)
+    resp = client.get("/packages/hub", headers={"Authorization": f"Bearer {auth_token}"})
     data = json.loads(resp.data.decode())
     assert resp.status_code == 200
     assert "Flat iron" in data.get("packages")[0].get("name")
